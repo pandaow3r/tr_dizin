@@ -137,11 +137,11 @@ export default function ResultsContainer({
                 <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
               ) : apiStatus === 'online' ? (
                 <div className="flex items-center">
-                  <Settings className="h-4 w-4 text-green-500 mr-1" title="N8N Workflow Aktif" />
-                  <Wifi className="h-4 w-4 text-green-500" title="TRDizin API Bağlantısı" />
+                  <Settings className="h-4 w-4 text-green-500 mr-1" aria-label="N8N Workflow Aktif" />
+                  <Wifi className="h-4 w-4 text-green-500" aria-label="TRDizin API Bağlantısı" />
                 </div>
               ) : (
-                <WifiOff className="h-4 w-4 text-orange-500" title="Çevrimdışı Mod - Demo Veriler" />
+                <WifiOff className="h-4 w-4 text-orange-500" aria-label="Çevrimdışı Mod - Demo Veriler" />
               )}
               <span className="text-xs text-gray-500">
                 {apiStatus === 'checking' ? 'Kontrol ediliyor...' : 
@@ -161,8 +161,7 @@ export default function ResultsContainer({
                   N8N Workflow bağlantı sorunu tespit edildi
                 </p>
                 <p className="text-sm text-yellow-600 mt-1">
-                  N8N webhook'i veya TRDizin API'si erişilemez durumda. Demo veriler gösteriliyor. 
-                  N8N workflow'unuzun aktif olduğundan emin olun.
+                  N8N webhook'i veya TRDizin API'si erişilemez durumda. Demo veriler gösteriliyor.
                 </p>
               </div>
             </div>
@@ -173,7 +172,7 @@ export default function ResultsContainer({
         {apiStatus === 'offline' && !showApiWarning && (
           <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-start">
-              <WifiOff className="h-5 w-5 text-blue-500 mr-3 mt-0.5 flex-shrink-0" />
+              <WifiOff className="h-5 w-5 text-blue-500 mr-3 mt-0.5 flex-shrink-0" aria-label="Çevrimdışı Mod - Demo Veriler" />
               <div>
                 <p className="text-sm text-blue-700 font-medium">
                   Demo mod aktif
@@ -190,7 +189,7 @@ export default function ResultsContainer({
         {apiStatus === 'online' && searchQuery && (
           <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
             <div className="flex items-start">
-              <Settings className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+              <Settings className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" aria-label="N8N Workflow Aktif" />
               <div>
                 <p className="text-sm text-green-700 font-medium">
                   N8N Workflow aktif

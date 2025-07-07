@@ -65,22 +65,18 @@ const mockData: Research[] = [
   }
 ];
 
+
 export async function fetchResearch(query: string): Promise<Research[]> {
   try {
-    console.log('N8N webhook\'ine POST isteği gönderiliyor:', query);
+    console.log('N8N webhook\'ine POST (query string ile) isteği gönderiliyor:', query);
     
-    // 1. N8N webhook'ine POST isteği gönder
-    const webhookResponse = await fetch(N8N_WEBHOOK_URL, {
+    // 1. N8N webhook'ine POST isteği gönder (body olmadan, query string ile)
+    const webhookUrlWithQuery = `${N8N_WEBHOOK_URL}?q=${encodeURIComponent(query)}`;
+    const webhookResponse = await fetch(webhookUrlWithQuery, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        query: {
-          q: query
-        }
-      })
+      }
     });
 
     if (!webhookResponse.ok) {
@@ -92,10 +88,20 @@ export async function fetchResearch(query: string): Promise<Research[]> {
     console.log('N8N webhook yanıtı:', webhookData);
 
     // 2. N8N'den gelen yanıtı kontrol et ve işle
-    if (webhookData && Array.isArray(webhookData)) {
-      const processedData = webhookData
-        .filter(item => item && (item.title || item.name))
-        .map(item => ({
+    const resultsArray = Array.isArray(webhookData)
+      ? webhookData
+      : Array.isArray(webhookData.data)
+        ? webhookData.data
+        : Array.isArray(webhookData.result)
+          ? webhookData.result
+          : Array.isArray(webhookData.publications)
+            ? webhookData.publications
+            : [];
+
+    if (resultsArray.length > 0) {
+      const processedData = resultsArray
+        .filter((item: any) => item && (item.title || item.name))
+        .map((item: any) => ({
           title: item.title || item.name || 'Başlıksız Araştırma',
           authors: item.authors || [],
           year: item.year || item.publicationYear || '',
@@ -103,7 +109,6 @@ export async function fetchResearch(query: string): Promise<Research[]> {
           doi: item.doi || '',
           url: item.url || ''
         }));
-
       if (processedData.length > 0) {
         console.log('N8N\'den başarılı veri alındı:', processedData.length, 'sonuç');
         return processedData;
@@ -124,7 +129,7 @@ export async function fetchResearch(query: string): Promise<Research[]> {
 
 // Mock data'dan filtrelenmiş sonuçlar döndür
 function getFilteredMockData(query: string): Research[] {
-  const filteredData = mockData.filter(item => 
+  const filteredData = mockData.filter((item: Research) => 
     item.title.toLowerCase().includes(query.toLowerCase()) ||
     query.toLowerCase().split(' ').some(word => 
       word.length > 2 && item.title.toLowerCase().includes(word)
